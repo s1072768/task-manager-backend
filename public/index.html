@@ -1,0 +1,76 @@
+<!-- public/index.html -->
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>任務管理</title>
+</head>
+<body>
+  <h1>新增任務</h1>
+  <form id="task-form">
+    <label for="title">標題:</label><br>
+    <input type="text" id="title" name="title" required><br><br>
+    
+    <label for="description">描述:</label><br>
+    <textarea id="description" name="description"></textarea><br><br>
+
+    <label for="due_date">截止日期:</label><br>
+    <input type="date" id="due_date" name="due_date"><br><br>
+
+    <button type="submit">提交</button>
+  </form>
+
+  <h2>任務列表</h2>
+  <ul id="tasks-list"></ul>
+  <ul id="taskList"></ul>
+
+
+  <script>
+    document.getElementById('task-form').addEventListener('submit', function (e) {
+      e.preventDefault();
+
+      const taskData = {
+        title: document.getElementById('title').value,
+        description: document.getElementById('description').value,
+        due_date: document.getElementById('due_date').value
+      };
+
+      fetch('http://localhost:3000/tasks', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(taskData)
+      })
+      .then(response => response.json())
+      .then(data => {
+        alert('任務已新增成功！');
+        console.log(data);
+      })
+      .catch(error => {
+        alert('新增任務失敗');
+        console.error('Error:', error);
+      });
+    });
+    // 當頁面載入時，呼叫 GET /tasks 來獲取所有任務
+    window.onload = function() {
+    fetch('http://localhost:3000/tasks')
+        .then(response => response.json())
+        .then(data => {
+        const tasksList = document.getElementById('tasks-list');
+        data.tasks.forEach(task => {
+            const listItem = document.createElement('li');
+            listItem.textContent = `標題: ${task.title}
+            , 描述： ${task.description}
+            , 截止日期: ${task.due_date}`;
+            tasksList.appendChild(listItem);
+        });
+        })
+        .catch(error => {
+        console.error('Error:', error);
+        });
+    };
+  </script>
+</body>
+</html>
