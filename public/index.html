@@ -36,7 +36,7 @@
         due_date: document.getElementById('due_date').value
       };
 
-      fetch('https://task-manager-backend-l9va.onrender.com/', {
+      fetch('https://task-manager-backend-l9va.onrender.com/tasks', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -55,7 +55,7 @@
     });
     // 當頁面載入時，呼叫 GET /tasks 來獲取所有任務
     window.onload = function() {
-    fetch('https://task-manager-backend-l9va.onrender.com/')
+    fetch('https://task-manager-backend-l9va.onrender.com/tasks')
         .then(response => response.json())
         .then(data => {
         const tasksList = document.getElementById('tasks-list');
