@@ -55,7 +55,7 @@
     });
     // 當頁面載入時，呼叫 GET /tasks 來獲取所有任務
     window.onload = function() {
-    fetch('http://localhost:3000/tasks')
+    fetch('https://task-manager-backend-l9va.onrender.com/')
         .then(response => response.json())
         .then(data => {
         const tasksList = document.getElementById('tasks-list');
