@@ -1,21 +1,29 @@
 // index.js
+require('dotenv').config();
+
 const express = require('express');
 const cors = require('cors');
 const path = require('path');
-const taskRoutes = require('./tasks/routes');
-
 const app = express();
 const PORT = 3000;
 
-// 中介軟體（middleware）
-app.use(cors()); // 允許跨來源請求（給前端用）
-app.use(express.json()); // 解析 JSON 請求
-app.use(express.static(path.join(__dirname, 'public'))); // 提供 public 資料夾的靜態檔案
+const authRoutes = require('./routes/authRoutes');
+const taskRoutes = require('./tasks/routes');
+const authenticateToken = require('./middleware/authMiddleware');
 
-// 註冊任務路由
-app.use('/', taskRoutes);
+app.use(cors());
+app.use(express.json());
+app.use(express.static(path.join(__dirname, 'public')));
 
-// 啟動伺服器
+// ✅ 不需驗證的放前面
+app.use('/api/auth', authRoutes);
+
+// ✅ 驗證中介層放在中間
+app.use(authenticateToken);
+
+// ✅ 需要驗證的放後面
+app.use('/api', taskRoutes);
+
 app.listen(PORT, () => {
   console.log(`✅ 伺服器已啟動：http://localhost:${PORT}`);
 });

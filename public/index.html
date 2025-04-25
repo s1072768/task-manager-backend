@@ -2,75 +2,245 @@
 <!DOCTYPE html>
 <html lang="zh-TW">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>任務管理</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>任務管理系統</title>
+  <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
-  <h1>新增任務</h1>
-  <form id="task-form">
-    <label for="title">標題:</label><br>
-    <input type="text" id="title" name="title" required><br><br>
-    
-    <label for="description">描述:</label><br>
-    <textarea id="description" name="description"></textarea><br><br>
+<body class="bg-gray-100 min-h-screen flex items-center justify-center p-4">
 
-    <label for="due_date">截止日期:</label><br>
-    <input type="date" id="due_date" name="due_date"><br><br>
+  <!-- Start 選擇畫面 -->
+  <div id="start-screen" class="w-full max-w-sm space-y-4 text-center">
+    <h1 class="text-2xl font-bold mb-4">歡迎使用任務管理系統</h1>
+    <button onclick="showScreen('register-screen')" class="w-full px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">註冊</button>
+    <button onclick="showScreen('login-screen')" class="w-full px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600">登入</button>
+  </div>
 
-    <button type="submit">提交</button>
-  </form>
+  <!-- 註冊畫面 -->
+  <div id="register-screen" class="hidden w-full max-w-sm bg-white p-6 rounded shadow space-y-4">
+    <h2 class="text-xl font-bold text-center">註冊帳號</h2>
+    <input type="text" id="register-username" placeholder="使用者名稱" class="w-full border p-2 rounded"/>
+    <input type="password" id="register-password" placeholder="密碼" class="w-full border p-2 rounded"/>
+    <button onclick="handleRegister()" class="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600">註冊</button>
+  </div>
 
-  <h2>任務列表</h2>
-  <ul id="tasks-list"></ul>
-  <ul id="taskList"></ul>
+  <!-- 登入畫面 -->
+  <div id="login-screen" class="hidden w-full max-w-sm bg-white p-6 rounded shadow space-y-4">
+    <h2 class="text-xl font-bold text-center">登入帳號</h2>
+    <input type="text" id="login-username" placeholder="使用者名稱" class="w-full border p-2 rounded"/>
+    <input type="password" id="login-password" placeholder="密碼" class="w-full border p-2 rounded"/>
+    <button onclick="handleLogin()" class="w-full bg-green-500 text-white py-2 rounded hover:bg-green-600">登入</button>
+  </div>
 
+  <!-- 任務介面 -->
+  <div id="task-screen" class="hidden w-full max-w-2xl">
+    <div class="bg-white p-6 rounded shadow mb-6">
+      <h2 class="text-xl font-bold mb-4">新增任務</h2>
+      <form id="task-form" class="space-y-4">
+        <input type="text" id="title" name="title" placeholder="標題" required class="w-full border p-2 rounded"/>
+        <textarea id="description" name="description" placeholder="描述" class="w-full border p-2 rounded"></textarea>
+        <input type="date" id="due_date" name="due_date" class="w-full border p-2 rounded"/>
+        <button type="submit" class="w-full bg-purple-500 text-white py-2 rounded hover:bg-purple-600">提交</button>
+      </form>
+    </div>
+
+    <div class="bg-white p-6 rounded shadow">
+      <h2 class="text-xl font-bold mb-4">任務列表</h2>
+      <ul id="tasks-list" class="space-y-2"></ul>
+    </div>
+  </div>
 
   <script>
+    function getAuthHeader() {
+      const token = localStorage.getItem('authToken');
+      return {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      };
+    }
+
+    function showScreen(id) {
+      ['start-screen', 'register-screen', 'login-screen', 'task-screen'].forEach(screen => {
+        document.getElementById(screen).classList.add('hidden');
+      });
+      document.getElementById(id).classList.remove('hidden');
+    }
+  
+    function handleRegister() {
+      const username = document.getElementById('register-username').value.trim();
+      const password = document.getElementById('register-password').value.trim();
+  
+      if (!username || !password) {
+        alert('請輸入使用者名稱與密碼');
+        return;
+      }
+  
+      fetch('http://localhost:3000/api/auth/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username, password })
+      })
+      .then(res => res.json())
+      .then(data => {
+        alert(data.message);
+        if (data.message === '註冊成功') showScreen('login-screen');
+      })
+      .catch(err => {
+        console.error('註冊錯誤', err);
+        alert('註冊失敗，請稍後再試');
+      });
+    }
+  
+    function handleLogin() {
+      const username = document.getElementById('login-username').value.trim();
+      const password = document.getElementById('login-password').value.trim();
+  
+      if (!username || !password) {
+        alert('請輸入使用者名稱與密碼');
+        return;
+      }
+  
+      fetch('http://localhost:3000/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username, password })
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (data.token) {
+          localStorage.setItem('authToken', data.token);
+          showScreen('task-screen');
+          loadTasks();
+        } else {
+          alert('登入失敗：' + (data.message || '請確認帳號密碼'));
+        }
+      })
+      .catch(err => {
+        console.error('登入錯誤', err);
+        alert('登入失敗，請稍後再試');
+      });
+    }
+  
     document.getElementById('task-form').addEventListener('submit', function (e) {
       e.preventDefault();
-
-      const taskData = {
-        title: document.getElementById('title').value,
-        description: document.getElementById('description').value,
-        due_date: document.getElementById('due_date').value
-      };
-
-      fetch('https://task-manager-backend-l9va.onrender.com/tasks', {
+      const title = document.getElementById('title').value.trim();
+      const description = document.getElementById('description').value.trim();
+      const due_date = document.getElementById('due_date').value;
+  
+      if (!title) {
+        alert('請輸入任務標題');
+        return;
+      }
+  
+      const taskData = { title, description, due_date };
+  
+      fetch('http://localhost:3000/api/tasks', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
+        headers: getAuthHeader(),
         body: JSON.stringify(taskData)
       })
-      .then(response => response.json())
-      .then(data => {
-        alert('任務已新增成功！');
-        console.log(data);
+      .then(res => {
+        if (res.status === 403) throw new Error('登入已過期，請重新登入');
+        return res.json();
       })
-      .catch(error => {
-        alert('新增任務失敗');
-        console.error('Error:', error);
+      .then(data => {
+        alert(data.message || '新增成功');
+        // 清空表單
+        document.getElementById('title').value = '';
+        document.getElementById('description').value = '';
+        document.getElementById('due_date').value = '';
+        loadTasks();
+      })
+      .catch(err => {
+        console.error('新增任務錯誤', err);
+        alert(err.message || '新增任務失敗');
+        if (err.message.includes('登入')) {
+          localStorage.removeItem('authToken');
+          showScreen('login-screen');
+        }
       });
     });
-    // 當頁面載入時，呼叫 GET /tasks 來獲取所有任務
-    window.onload = function() {
-    fetch('https://task-manager-backend-l9va.onrender.com/tasks')
-        .then(response => response.json())
-        .then(data => {
+  
+    function loadTasks() {
+      fetch('http://localhost:3000/api/tasks', {
+        headers: getAuthHeader(),
+      })
+      .then(res => {
+        if (res.status === 403) throw new Error('登入已過期，請重新登入');
+        return res.json();
+      })
+      .then(data => {
         const tasksList = document.getElementById('tasks-list');
-        data.tasks.forEach(task => {
-            const listItem = document.createElement('li');
-            listItem.textContent = `標題: ${task.title}
-            , 描述： ${task.description}
-            , 截止日期: ${task.due_date}`;
-            tasksList.appendChild(listItem);
-        });
-        })
-        .catch(error => {
-        console.error('Error:', error);
-        });
-    };
+        tasksList.innerHTML = '';
+        if (data && Array.isArray(data.tasks)) {
+          data.tasks.forEach(task => {
+            const li = document.createElement('li');
+            li.className = 'p-3 bg-gray-100 rounded shadow';
+            li.innerHTML = `
+              <div class="space-y-1">
+                <strong>${task.title}</strong><br>${task.description || ''}<br>📅 ${task.due_date}
+                <div class="mt-2 space-x-2">
+                  <button onclick="showEditForm(${task.id}, '${task.title}', \`${task.description || ''}\`, '${task.due_date}')" class="text-sm text-blue-600 hover:underline">✏️ 編輯</button>
+                </div>
+                <form id="edit-form-${task.id}" class="hidden space-y-2 mt-2">
+                  <input type="text" id="edit-title-${task.id}" value="${task.title}" class="w-full border p-1 rounded"/>
+                  <textarea id="edit-description-${task.id}" class="w-full border p-1 rounded">${task.description || ''}</textarea>
+                  <input type="date" id="edit-due-date-${task.id}" value="${task.due_date}" class="w-full border p-1 rounded"/>
+                  <button type="button" onclick="submitEdit(${task.id})" class="bg-green-500 text-white px-2 py-1 rounded hover:bg-green-600">儲存</button>
+                </form>
+              </div>
+            `;
+            tasksList.appendChild(li);
+          });
+        } else {
+          console.error("tasks 不存在或不是陣列", data);
+        }
+      })
+      .catch(err => {
+        console.error('載入任務失敗', err);
+        alert(err.message || '無法載入任務');
+        if (err.message.includes('登入')) {
+          localStorage.removeItem('authToken');
+          showScreen('login-screen');
+        }
+      });
+    }
+    function showEditForm(id, title, description, due_date) {
+  const form = document.getElementById(`edit-form-${id}`);
+  form.classList.toggle('hidden');
+}
+
+    function submitEdit(id) {
+      const title = document.getElementById(`edit-title-${id}`).value.trim();
+      const description = document.getElementById(`edit-description-${id}`).value.trim();
+      const due_date = document.getElementById(`edit-due-date-${id}`).value;
+
+      if (!title) {
+        alert('標題不能為空');
+        return;
+      }
+
+      const token = localStorage.getItem('authToken');
+
+      fetch(`http://localhost:3000/api/tasks/${id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({ title, description, due_date })
+      })
+      .then(res => res.json())
+      .then(data => {
+        alert(data.message || '更新成功');
+        loadTasks(); // 更新畫面
+      })
+      .catch(err => {
+        console.error('更新任務失敗', err);
+        alert(err.message || '更新失敗');
+      });
+    }
   </script>
+  
 </body>
 </html>

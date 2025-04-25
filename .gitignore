@@ -1,0 +1,28 @@
+# 忽略 node_modules 資料夾
+node_modules/
+
+# 忽略 dotenv 設定檔
+.env
+
+# 忽略 SQLite 資料庫檔案（如果你不希望它們被上傳）
+*.sqlite3
+*.db
+*.db-journal
+
+# 忽略系統檔案
+.DS_Store
+Thumbs.db
+
+# 忽略編譯暫存檔（某些編譯工具會產生）
+dist/
+build/
+
+# log 檔案
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# VS Code 設定（如果是多人專案建議不要上傳）
+.vscode/
+
