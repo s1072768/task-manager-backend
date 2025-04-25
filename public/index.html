@@ -75,7 +75,7 @@
         return;
       }
   
-      fetch('http://localhost:3000/api/auth/register', {
+      fetch('https://task-manager-backend-l9va.onrender.com/api/auth/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ username, password })
@@ -100,7 +100,7 @@
         return;
       }
   
-      fetch('http://localhost:3000/api/auth/login', {
+      fetch('https://task-manager-backend-l9va.onrender.com/api/auth/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ username, password })
@@ -134,7 +134,7 @@
   
       const taskData = { title, description, due_date };
   
-      fetch('http://localhost:3000/api/tasks', {
+      fetch('https://task-manager-backend-l9va.onrender.com/api/tasks', {
         method: 'POST',
         headers: getAuthHeader(),
         body: JSON.stringify(taskData)
@@ -162,7 +162,7 @@
     });
   
     function loadTasks() {
-      fetch('http://localhost:3000/api/tasks', {
+      fetch('https://task-manager-backend-l9va.onrender.com/api/tasks', {
         headers: getAuthHeader(),
       })
       .then(res => {
@@ -222,7 +222,7 @@
 
       const token = localStorage.getItem('authToken');
 
-      fetch(`http://localhost:3000/api/tasks/${id}`, {
+      fetch(`https://task-manager-backend-l9va.onrender.com/api/tasks/${id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
