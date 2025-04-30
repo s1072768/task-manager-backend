@@ -17,7 +17,7 @@
       return;
     }
   
-    fetch('http://task-manager-backend-l9va.onrender.com/api/auth/register', {
+    fetch('https://task-manager-backend-l9va.onrender.com/api/auth/register', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ username, password })
@@ -42,7 +42,7 @@
       return;
     }
   
-    fetch('http://task-manager-backend-l9va.onrender.com/api/auth/login', {
+    fetch('https://task-manager-backend-l9va.onrender.com/api/auth/login', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ username, password })
