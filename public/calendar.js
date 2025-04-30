@@ -63,7 +63,7 @@ function initCalendar() {
 
 // 載入任務資料
 function loadCalendarEvents(fetchInfo, successCallback, failureCallback) {
-  fetch('http://task-manager-backend-l9va.onrender.com//api/tasks', {
+  fetch('http://task-manager-backend-l9va.onrender.com/api/tasks', {
     headers: getAuthHeader(),
   })
   .then(res => res.json())
