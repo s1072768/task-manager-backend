@@ -54,7 +54,7 @@
       };
 
 // 送出 POST 請求
-    fetch('http://task-manager-backend-l9va.onrender.com/api/tasks', {
+    fetch('https://task-manager-backend-l9va.onrender.com/api/tasks', {
         method: 'POST',
         headers: getAuthHeader(),
         body: JSON.stringify(taskData)
@@ -94,7 +94,7 @@
   }
   
   function loadTasks() {
-    fetch('http://task-manager-backend-l9va.onrender.com/api/tasks', {
+    fetch('https://task-manager-backend-l9va.onrender.com/api/tasks', {
       headers: getAuthHeader(),
     })
     .then(res => {
@@ -149,7 +149,7 @@
   
   function deleteTask(id) {
   
-    fetch(`http://task-manager-backend-l9va.onrender.com/api/tasks/${id}`, {
+    fetch(`https://task-manager-backend-l9va.onrender.com/api/tasks/${id}`, {
       method: 'DELETE',
       headers: getAuthHeader()
     })
@@ -173,7 +173,7 @@
         return;
     }
 
-    fetch(`http://task-manager-backend-l9va.onrender.com/api/tasks/${id}`, {
+    fetch(`https://task-manager-backend-l9va.onrender.com/api/tasks/${id}`, {
         method: 'PUT',
         headers: getAuthHeader(),
         body: JSON.stringify({ title, description, due_date })
