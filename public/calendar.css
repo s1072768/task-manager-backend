@@ -1,0 +1,25 @@
+.fc-daygrid-day {
+    transition: transform 0.3s ease, background-color 0.3s ease;
+    overflow: hidden;
+    position: relative;
+  }
+  
+  .fc-daygrid-day.hovered {
+    transform: scale(1.05);
+    background-color: #fef9c3; /* 淡淡黃色，感覺有浮起 */
+    z-index: 10; /* 避免被別的元素擋到 */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  }
+  
+  .fc-daygrid-day-task-list {
+    margin-top: 5px;
+    font-size: 0.75rem;
+    line-height: 1rem;
+  }
+  
+  .fc-daygrid-day-task-list div {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  

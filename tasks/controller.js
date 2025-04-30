@@ -5,8 +5,19 @@ const db = require('../db');
 
 db.serialize(() => {
   db.run("CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY AUTOINCREMENT, username TEXT, password TEXT)");
-  db.run("CREATE TABLE IF NOT EXISTS tasks (id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT, description TEXT, due_date TEXT, status TEXT DEFAULT 'pending', user_id INTEGER, FOREIGN KEY(user_id) REFERENCES users(id))");
-});
+  db.run(`CREATE TABLE IF NOT EXISTS tasks (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    title TEXT,
+    description TEXT,
+    due_date TEXT,
+    latitude REAL,
+    longitude REAL,
+    location_name TEXT,
+    status TEXT DEFAULT 'pending',
+    user_id INTEGER,
+    FOREIGN KEY(user_id) REFERENCES users(id)
+  )`);
+  });
 
 // 註冊功能
 async function registerUser(req, res) {
@@ -52,7 +63,12 @@ function loginUser(req, res) {
 
 // 新增任務
 function createTask(req, res) {
-  const { title, description, due_date, is_completed, completed} = req.body;
+  console.log("req.body", req.body);
+  const { title, description, due_date, location } = req.body;
+  const status = 'pending';
+  const latitude = location ? location.latitude : null;
+  const longitude = location ? location.longitude : null;
+  const location_name = location? location.location_name : null;
   const userId = req.user.id;
 
   if (!title) {
@@ -60,10 +76,25 @@ function createTask(req, res) {
   }
 
   const sql = `
-  INSERT INTO tasks (title, description, due_date, is_completed, completed, user_id) 
-  VALUES (?, ?, ?, ?, ?, ?) `;
+    INSERT INTO tasks (
+      title, description, due_date,
+      latitude, longitude, location_name,
+      user_id, status
+    ) 
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+  `;
 
-  db.run(sql, [title, description, due_date, is_completed, completed, userId], function (err) {
+  db.run(sql, [
+      title,
+      description,
+      due_date,
+      latitude,
+      longitude,
+      location_name,
+      userId,
+      status
+    ],
+   function (err) {
     if (err) {
       return res.status(500).json({ error: '新增任務失敗', details: err.message });
     }
@@ -75,9 +106,12 @@ function createTask(req, res) {
         title,
         description,
         due_date,
-        is_completed: 0,
+        latitude,
+        longitude,
+        location_name: location_name
       },
-    });
+    }
+  );
   });
 }
 

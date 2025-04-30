@@ -1,0 +1,16 @@
+/* 固定的按鈕樣式 */
+  #mode-toggle-btn {
+    position: fixed;
+    bottom: 20px;  /* 距離底部20px */
+    right: 20px;   /* 距離右側20px */
+    background-color: #9b59b6; /* 按鈕顏色 */
+    color: white;
+    border: none;
+    padding: 15px 25px;
+    border-radius: 50px;
+    cursor: pointer;
+    font-size: 16px;
+    z-index: 999;  /* 確保按鈕總是在最上層 */
+  }
+
+  

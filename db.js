@@ -5,14 +5,31 @@ const db = new sqlite3.Database('tasks.db');
 
 // 建立 tasks 資料表（如果尚未存在）
 db.serialize(() => {
+  // 刪除舊的 tasks 資料表，如果需要重新創建
+  db.run("DROP TABLE IF EXISTS tasks");
+
+  // 重新創建 tasks 資料表
   db.run(`
     CREATE TABLE IF NOT EXISTS tasks (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       title TEXT NOT NULL,
       description TEXT,
       due_date TEXT,
-      is_completed INTEGER DEFAULT 0,
-      created_at TEXT DEFAULT CURRENT_TIMESTAMP
+      latitude REAL,
+      longitude REAL,
+      location_name TEXT,
+      status TEXT DEFAULT 'pending',
+      user_id INTEGER,
+      FOREIGN KEY(user_id) REFERENCES users(id)
+    );
+  `);
+
+  // 確保 users 資料表存在
+  db.run(`
+    CREATE TABLE IF NOT EXISTS users (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      username TEXT,
+      password TEXT
     );
   `);
 });
