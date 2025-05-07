@@ -5,16 +5,13 @@ const db = new sqlite3.Database('tasks.db');
 
 // 建立 tasks 資料表（如果尚未存在）
 db.serialize(() => {
-  // 刪除舊的 tasks 資料表，如果需要重新創建
-  db.run("DROP TABLE IF EXISTS tasks");
-
   // 重新創建 tasks 資料表
   db.run(`
     CREATE TABLE IF NOT EXISTS tasks (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       title TEXT NOT NULL,
       description TEXT,
-      due_date TEXT,
+      selected_date DATE,
       latitude REAL,
       longitude REAL,
       location_name TEXT,

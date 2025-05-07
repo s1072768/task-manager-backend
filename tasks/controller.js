@@ -1,4 +1,4 @@
-// 引入資料庫
+// tasks/controller.js
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const db = require('../db');
@@ -9,7 +9,7 @@ db.serialize(() => {
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     title TEXT,
     description TEXT,
-    due_date TEXT,
+    selected_date DATE,
     latitude REAL,
     longitude REAL,
     location_name TEXT,
@@ -19,52 +19,10 @@ db.serialize(() => {
   )`);
   });
 
-// 註冊功能
-async function registerUser(req, res) {
-  const { username, password } = req.body;
-  const hashedPassword = await bcrypt.hash(password, 10); // 加密密碼
-
-  const sql = 'INSERT INTO users (username, password) VALUES (?, ?)';
-  const params = [username, hashedPassword];
-
-  db.run(sql, params, function(err) {
-    if (err) {
-      return res.status(500).json({ error: err.message });
-    }
-    res.status(201).json({ message: '註冊成功' });
-  });
-}
-
-// 登入功能
-function loginUser(req, res) {
-  const { username, password } = req.body;
-
-  const sql = 'SELECT * FROM users WHERE username = ?';
-  const params = [username];
-
-  db.get(sql, params, (err, row) => {
-    if (err || !row) {
-      return res.status(400).json({ message: '使用者或密碼錯誤' });
-    }
-
-    // 驗證密碼
-    bcrypt.compare(password, row.password, (err, isMatch) => {
-      if (!isMatch) {
-        return res.status(400).json({ message: '使用者或密碼錯誤' });
-      }
-
-      // 密碼正確，生成 JWT
-      const token = jwt.sign({ id: row.id, username: row.username }, 'your_jwt_secret', { expiresIn: '1h' });
-
-      res.json({ message: '登入成功', token });
-    });
-  });
-}
-
 // 新增任務
 function createTask(req, res) {
   console.log("req.body", req.body);
-  const { title, description, due_date, location } = req.body;
+  const { title, description, selected_date , location } = req.body;
   const status = 'pending';
   const latitude = location ? location.latitude : null;
   const longitude = location ? location.longitude : null;
@@ -77,7 +35,7 @@ function createTask(req, res) {
 
   const sql = `
     INSERT INTO tasks (
-      title, description, due_date,
+      title, description, selected_date ,
       latitude, longitude, location_name,
       user_id, status
     ) 
@@ -87,7 +45,7 @@ function createTask(req, res) {
   db.run(sql, [
       title,
       description,
-      due_date,
+      selected_date ,
       latitude,
       longitude,
       location_name,
@@ -105,7 +63,7 @@ function createTask(req, res) {
         id: this.lastID,
         title,
         description,
-        due_date,
+        selected_date ,
         latitude,
         longitude,
         location_name: location_name
@@ -117,9 +75,17 @@ function createTask(req, res) {
 
 // 讀取所有任務
 function getAllTasks(req, res) {
-  const userId = req.user.id; // 🔑 從 JWT 取得目前使用者 ID
-  const sql = 'SELECT * FROM tasks WHERE user_id = ?';
-  
+  const userId = req.user.id; 
+  const date = req.query.date;
+
+  let sql = 'SELECT * FROM tasks WHERE user_id = ?';
+  const params = [userId];
+
+  if (date) {
+    sql += ' AND selected_date = ?';
+    params.push(date);
+  }
+
   db.all(sql, [userId], (err, rows) => {
     if (err) {
       return res.status(500).json({ error: '無法讀取任務資料', details: err.message });
@@ -132,22 +98,42 @@ function getAllTasks(req, res) {
 // 更新任務
 function updateTasks(req, res) {
   const { id } = req.params;
-  const { title, description, due_date } = req.body;
+  const updates = [];
+  const params = [];
 
-  const sql = 'UPDATE tasks SET title = ?, description = ?, due_date = ? WHERE id = ?';
-  const params = [title, description, due_date, id];
+  if (req.body.title !== undefined) {
+    updates.push("title = ?");
+    params.push(req.body.title);
+  }
+  if (req.body.description !== undefined) {
+    updates.push("description = ?");
+    params.push(req.body.description);
+  }
+  if (req.body.location_name !== undefined) {
+    updates.push("location_name = ?");
+    params.push(req.body.location_name);
+  }
+
+  if (updates.length === 0) {
+    return res.status(400).json({ message: "沒有提供更新欄位" });
+  }
+
+  const sql = `UPDATE tasks SET ${updates.join(", ")} WHERE id = ?`;
+  params.push(id);
 
   db.run(sql, params, function (err) {
     if (err) {
-      res.status(500).json({ error: err.message });
-      return;
+      return res.status(500).json({ error: err.message });
     }
     if (this.changes === 0) {
-      return res.status(404).json({ message: '任務未找到' });
+      return res.status(404).json({ message: "任務未找到" });
     }
-    res.json({ message: '任務已更新', id });
+    res.json({ message: "任務已更新", id });
   });
+  console.log(req.body);
 }
+
+
 
 // 刪除任務
 function deleteTasks(req, res) {
@@ -170,9 +156,7 @@ function deleteTasks(req, res) {
 
 module.exports = {
   createTask,
-  getAllTasks,  // 確保這裡有匯出 getAllTasks 函數
+  getAllTasks, 
   updateTasks,
-  deleteTasks,
-  registerUser,
-  loginUser
+  deleteTasks
 };

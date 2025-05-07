@@ -18,7 +18,7 @@ const toggleButton = document.getElementById('mode-toggle-btn');
       showCalendarView()
     }
   });
-
+ 
 // 新增 showListView 和 showCalendarView，給 HTML 的 onclick 呼叫
 function showListView() {
   document.getElementById('list-view').classList.remove('hidden');
@@ -70,7 +70,7 @@ function loadCalendarEvents(fetchInfo, successCallback, failureCallback) {
   .then(data => {
     const events = data.tasks.map(task => ({
       title: task.title,
-      start: task.due_date,
+      start: task.selected_date,
       description: task.description
     }));
     console.log(events);
@@ -99,7 +99,7 @@ function showTasksOnDate(dateStr) {
 }
 
 
-// 點擊日期 - 開啟新增任務表單
+// 點擊日期 - 開啟新增任務表單 **不需要**
 function openTaskForm(selectedDate) {
   showListView();
 
@@ -140,4 +140,3 @@ if (switchToAddBtn) {
     console.log('已切換為新增模式');
   });
 }
-

@@ -3,128 +3,259 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>任務管理系統</title>
+  <title>任務管理系統</title> 
+  
+  
+  <!-- ✅ Bootstrap 4 Grid 系統（排版用） -->
+  <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.0.0-beta.2/css/bootstrap-grid.css'>
+
+  <!-- ✅ 動畫庫 animate.css -->
+  <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css'>
+
+  <!-- 載入 Materialize CSS 樣式 -->
+  <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/css/materialize.min.css'>
+  
+ 
+  
+  <!-- 🔤 載入 Roboto 字體，包含字重 300（細）、400（正常）、500（中粗） -->
+  <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500" rel="stylesheet">
+
+  <!-- 🎨 載入 Google 的 Material Icons 圖示字型，讓你能用 <i class="material-icons">icon_name</i> 顯示圖標 -->
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+  <!-- ✅ jQuery：用來操作 DOM -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
+  <!-- 📍 Leaflet 地圖元件的 CSS，讓地圖顯示正確樣式 -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+
+  <!-- 🗺️ Leaflet 地圖元件的 JS，提供互動式地圖功能 -->
   <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.css" rel="stylesheet">
-  <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
-  <link rel="stylesheet" href="calendar.css">
+
+  <!-- ✅ Boxicons 圖示字體庫，讓你使用各種漂亮圖標 -->
+  <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+
+  <!-- 🎨 style.css：你自己寫的主樣式檔案（頁面整體風格） -->
+
+     
   <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="calendar.css">
+
 </head>
-<body class="bg-gray-100 min-h-screen flex items-center justify-center p-4">
-
+<body>
   <!-- Start 選擇畫面 -->
-  <div id="start-screen" class="w-full max-w-sm space-y-4 text-center">
-    <h1 class="text-2xl font-bold mb-4">歡迎使用任務管理系統</h1>
-    <button onclick="showScreen('register-screen')" class="w-full px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">註冊</button>
-    <button onclick="showScreen('login-screen')" class="w-full px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600">登入</button>
-  </div>
+<div class="container1" id="start-screen">
+    <!-- 登入畫面 -->
+    <div class="form-box login">
+      <form action="#">
+        <h1>登入</h1>
 
-  <!-- 註冊畫面 -->
-  <div id="register-screen" class="hidden w-full max-w-sm bg-white p-6 rounded shadow space-y-4">
-    <h2 class="text-xl font-bold text-center">註冊帳號</h2>
-    <input type="text" id="register-username" placeholder="使用者名稱" class="w-full border p-2 rounded"/>
-    <input type="password" id="register-password" placeholder="密碼" class="w-full border p-2 rounded"/>
-    <button onclick="handleRegister()" class="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600">註冊</button>
-  </div>
+            <div class="antiMaterialize">
+                <div class="input-box">
+                    <input type="text" id="login-username" placeholder="帳戶名稱" required>
+                    <i class='bx bxs-user'></i>
+                </div>
+                <div class="input-box">
+                    <input type="password" id="login-password" placeholder="密碼" required>
+                    <i class='bx bxs-lock-alt' ></i>
+                </div>
+            </div>
 
-  <!-- 登入畫面 -->
-  <div id="login-screen" class="hidden w-full max-w-sm bg-white p-6 rounded shadow space-y-4">
-    <h2 class="text-xl font-bold text-center">登入帳號</h2>
-    <input type="text" id="login-username" placeholder="使用者名稱" class="w-full border p-2 rounded"/>
-    <input type="password" id="login-password" placeholder="密碼" class="w-full border p-2 rounded"/>
-    <button onclick="handleLogin()" class="w-full bg-green-500 text-white py-2 rounded hover:bg-green-600">登入</button>
-  </div>
+            <div class="forgot-link">
+                <a href="#">忘記密碼？</a>
+            </div>
+
+            <button onclick="handleLogin()" class="btn">登入</button>
+      </form>
+    </div>
+    <!-- 註冊畫面 -->
+    <div class="form-box register">
+      <form action="#">
+        <h1>註冊</h1>
+
+            <div class="input-box">
+                <input type="text" id="register-username" placeholder="帳戶名稱" required>
+                <i class='bx bxs-user'></i>
+            </div>
+
+            <div class="input-box">
+                <input type="password" id="register-password" placeholder="密碼" required>
+                <i class='bx bxs-lock-alt' ></i>
+            </div>
+
+            <button onclick="handleRegister()" class="btn">註冊</button>
+      </form>
+    </div>
+
+    <div class="toggle-box">
+
+        <div class="toggle-panel toggle-left">
+            <h1>任務管理及安排</h1>
+            <p>沒有帳號嗎？</p>
+            <button class="btn register-btn">註冊</button>
+        </div>
+
+        <div class="toggle-panel toggle-right">
+            <h1>註冊介面</h1>
+            <p>有帳號嗎？</p>
+            <button class="btn login-btn">登入</button>
+        </div>
+
+    </div>
+</div>
+
+
 
   <!-- 任務介面 -->
-  <div id="task-screen" class="hidden w-full max-w-2xl">
-    <!-- 清單模式顯示區 -->
-    <div id="list-view" class="hidden">
-      <div class="bg-white p-6 rounded shadow mb-6">
-        <h2 class="text-xl font-bold mb-4">新增任務</h2>
-        <form id="task-form" class="space-y-4">
-          <input type="text" id="title" name="title" placeholder="標題" required class="w-full border p-2 rounded"/>
-          <textarea id="description" name="description" placeholder="描述" class="w-full border p-2 rounded"></textarea>
-          <input type="datetime-local" id="due_date" name="due_date" class="w-full border p-2 rounded"/>
-          
-          <!-- 地點設定區塊 -->
-          <div class="space-y-2">
-            <label class="flex items-center space-x-2">
-              <input type="checkbox" id="enable-location" class="w-4 h-4">
-              <span>指定任務地點</span>
-            </label>
-            <div id="location-fields" class="hidden">
-              <label for="location_name">地點名稱</label>
-              <input type="text" id="location_name" name="location_name" placeholder="為地點命名">
-              <div id="map" style="height: 300px;"></div>
-            </div>
-          </div>
-          
-          <!-- 隱藏欄位儲存經緯度 -->
-          <input type="hidden" id="latitude" name="latitude">
-          <input type="hidden" id="longitude" name="longitude">
-          
-          <!-- 提交任務按鈕 -->
-          <button type="submit" class="w-full bg-purple-500 text-white py-2 rounded hover:bg-purple-600">提交</button>
-        </form>     
+<div id="task-screen" class="hidden">
+
+  <div class="mobile-header z-depth-1">
+      <div class="row">
+
+        <div class="col-2">
+          <!-- 漢堡選單按鈕 -->
+          <a href="#" data-activates="sidebar" class="button-collapse">
+            <i class="material-icons">menu</i>
+          </a>
+        </div>
+
+        <div class="col">
+          <h4>Events</h4>
+        </div>
+        
       </div>
 
-      <div class="bg-white p-6 rounded shadow">
-        <h2 class="text-xl font-bold mb-4">任務列表</h2>
-        <ul id="tasks-list" class="space-y-2"></ul>
-      </div>
-    </div>
-
-    <!-- 月曆模式顯示區 -->
-    <div id="calendar-view">
-      <div class="bg-white p-6 rounded shadow">
-        <h2 class="text-xl font-bold mb-4">任務行事曆</h2>
-        <button id="switch-to-view" class="text-gray-700 hover:text-blue-600 px-2 py-1">
-          📅瀏覽
-        </button>
-        <button id="switch-to-add" class="text-gray-700 hover:text-blue-600 px-2 py-1">
-          ✏️編輯
-        </button>
-        <div id="calendar" class="w-full h-[600px] rounded shadow border"></div>
-      </div>
-    </div>
-    <button id="mode-toggle-btn" class="px-4 py-2 bg-purple-500 text-white rounded hover:bg-purple-600">
-        清單模式
-    </button>
   </div>
-  
-    
 
+    <!-- 📦 主容器 -->
+    <div class="main-wrapper">
+
+        <!-- 📑 側邊欄 -->
+        <div class="sidebar-wrapper z-depth-2 side-nav fixed" id="sidebar">
+            <div class="sidebar-title">
+                <h4>Events</h4>
+                <h5 id="eventDayName">Date</h5> 
+            </div>
+
+            <div class="sidebar-events" id="sidebarEvents">
+                <ul id="tasks-list"></ul>
+            </div>   
+
+        </div>
+
+          <!-- 📄 主要內容區塊 -->
+        <div class="content-wrapper lighten-3">
+
+              <!-- 📆 行事曆主體 -->
+            <div class="calendar-wrapper z-depth-2">
+
+                  <!-- 📅 行事曆標頭 -->
+                <div class="header-background">
+                    <div class="calendar-header">
+                      <!-- ⬅️ ➡️ 月份切換按鈕 -->
+                      <a class="prev-button" id="prev">
+                        <i class="material-icons">keyboard_arrow_left</i>
+                      </a>
+
+                      <a class="next-button" id="next">
+                        <i class="material-icons">keyboard_arrow_right</i>
+                      </a>
+
+                      <div class="row header-title">
+                        <div class="header-text">
+                          <h3 id="month-name"></h3>
+                          <h5 id="todayDayName"></h5>
+                        </div>
+                      </div>
+
+                    </div>
+                </div>
+
+            <div class="calendar-box">
+                  <!-- 🗓️ 行事曆內容（星期標頭 + 日期） -->
+                <div class="calendar-content">
+                    <div id="calendar-table" class="calendar-cells">
+                      <!-- 📅 星期列 -->
+                        <div id="table-header">
+                            <div class="row">
+                              <div class="col">壹</div>
+                              <div class="col">貳</div>
+                              <div class="col">叄</div>
+                              <div class="col">肆</div>
+                              <div class="col">伍</div>
+                              <div class="col">陸</div>
+                              <div class="col">柒</div>
+                            </div>
+                        </div>
+
+                        <!-- 🔢 日期區塊（由 JS 動態填入） -->
+                        <div id="table-body" class="">
+                          <!-- JS 會填入每月的格子 -->
+                        </div>
+
+                    </div>
+                </div>
+
+                  <!-- 📝 行事曆底部（新增事件區） -->
+            <div class="calendar-footer">
+                    <!-- 當前無事件時 -->
+                <div class="emptyForm" id="emptyForm">
+                    <h4 id="emptyFormTitle">No events now</h4>
+                    <a class="addEvent" id="changeFormButton">Add new</a>
+                </div>
+
+                    <!-- 新增事件表單 -->
+                <div class="addForm" id="addForm">
+                    <h4>新增任務</h4>
+                    <form id="task-form">
+                        <input type="text" id="title" name="title" placeholder="標題" required />
+                        <textarea id="description" name="description" placeholder="描述"></textarea>
+                        <!-- 地點設定區塊 -->
+                            <div class="location-checkbox">
+                                <input type="checkbox" id="enable-location" class="block w-4 h-4 text-white-600 border-white-300 focus:ring-white-500">
+                                <label for="enable-location"class="flex items-center space-x-2">
+                                    指定任務地點
+                                </label>
+                            </div>
+
+                            <div id="location-fields" class="hidden">
+                                <input type="text" id="location_name" name="location_name" placeholder="為地點命名">
+                                <div id="map" style="height: 300px;"></div>
+                            </div>                      
+                          
+                          <!-- 隱藏欄位儲存經緯度 -->
+                        <input type="hidden" id="latitude" name="latitude">
+                        <input type="hidden" id="longitude" name="longitude">
+
+                        <!-- 提交任務按鈕 -->
+                        <div class="button-box">             
+                            <button type="submit"  class="waves-effect waves-light btn blue lighten-2">提交</button>
+                            <button id="cancelAdd" class="waves-effect waves-light btn grey lighten-2">cancel</button>
+                        </div>
+
+                    </form>     
+                </div>
+            </div>
+            </div>
+            </div>
+        </div>
+    </div>
+</div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js" integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh"
+    crossorigin="anonymous"></script>    
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js" integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ"
+    crossorigin="anonymous"></script>    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/js/materialize.min.js"></script>
+
+    <script>
+      $(".button-collapse").sideNav();
+    </script>
+    
+ 
   <script src="auth.js"></script>
   <script src="tasks.js"></script>
   <script src="location.js"></script>
-  <script src="calendar.js"></script> 
-  
-  <script>
-    // 取得 DOM 元素
-    const toggleButton = document.getElementById('mode-toggle-btn');
-      const listView = document.getElementById('list-view');
-      const calendarView = document.getElementById('calendar-view');
-
-      // 初始顯示月曆模式
-      let isListView = false; // 默認顯示月曆視圖
-
-      // 按鈕點擊事件：切換模式
-      toggleButton.addEventListener('click', () => {
-        isListView = !isListView; // 反轉視圖狀態
-
-        if (isListView) {
-          listView.style.display = 'block';  // 顯示清單模式
-          calendarView.style.display = 'none';  // 隱藏月曆模式
-          toggleButton.textContent = '月曆模式';  // 改變按鈕文字
-        } else {
-          listView.style.display = 'none';  // 隱藏清單模式
-          calendarView.style.display = 'block';  // 顯示月曆模式
-          toggleButton.textContent = '清單模式';  // 改變按鈕文字
-        }
-      });
-  </script> 
+  <script src="calendar1.js"></script>
 </body>
 
 </html>
