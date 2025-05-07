@@ -72,7 +72,7 @@
   
   
   function deleteTask(id) {
-    fetch(`http://localhost:3000/api/tasks/${id}`, {
+    fetch(`https://task-manager-backend-l9va.onrender.com/api/tasks/${id}`, {
       method: 'DELETE',
       headers: getAuthHeader()
     })
@@ -92,7 +92,7 @@
     const location_name = document.getElementById(`edit-location-${id}`).value.trim();
     
     // 發送 PATCH 請求，並確保不更新 selected_date
-    fetch(`http://localhost:3000/api/tasks/${id}`, {
+    fetch(`https://task-manager-backend-l9va.onrender.com/api/tasks/${id}`, {
         method: 'PUT',
         headers: getAuthHeader(),
         body: JSON.stringify({ title, description, location_name})
