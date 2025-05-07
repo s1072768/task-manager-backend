@@ -21,7 +21,7 @@ var sidebar = document.getElementById("sidebar");
 
 
 function createCalendar(date, side) {
-   fetch('http://localhost:3000/api/tasks', {
+   fetch('https://task-manager-backend-l9va.onrender.com//api/tasks', {
       method: 'GET',
       headers: getAuthHeader(),
     })
@@ -176,7 +176,7 @@ function showEvents() {
    console.log(selectedDateStr)
    sidebarEvents.innerHTML = ""; // 清空原本事件顯示區
    // 使用 fetch 向後端請求該日期的事件資料
-   fetch(`http://localhost:3000/api/tasks`, {
+   fetch(`https://task-manager-backend-l9va.onrender.com//api/tasks`, {
       method: 'GET',
       headers: getAuthHeader()
    })
