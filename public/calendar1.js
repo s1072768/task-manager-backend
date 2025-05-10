@@ -327,7 +327,7 @@ function showEvents() {
          });
       
          let emptyFormMessage = document.getElementById("emptyFormTitle");
-         emptyFormMessage.innerHTML = `${eventsCount} events now`; // 顯示目前事件總數
+         emptyFormMessage.innerHTML = `共有${eventsCount}件事件`; // 顯示目前事件總數
       } else {
          let emptyMessage = document.createElement("div");
          emptyMessage.className = "empty-message";
@@ -335,7 +335,7 @@ function showEvents() {
          sidebarEvents.appendChild(emptyMessage);
 
          let emptyFormMessage = document.getElementById("emptyFormTitle");
-         emptyFormMessage.innerHTML = "No events now"; // 清空事件數顯示
+         emptyFormMessage.innerHTML = "現在沒有事件"; // 清空事件數顯示
       }
       
    })
