@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>任務管理系統</title> 
+  
+  
+  <!-- ✅ Bootstrap 4 Grid 系統（排版用） -->
+  <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.0.0-beta.2/css/bootstrap-grid.css'>
+
+  <!-- ✅ 動畫庫 animate.css -->
+  <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css'>
+
+  <!-- 載入 Materialize CSS 樣式 -->
+  <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/css/materialize.min.css'>
+  
+ 
+  
+  <!-- 🔤 載入 Roboto 字體，包含字重 300（細）、400（正常）、500（中粗） -->
+  <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500" rel="stylesheet">
+
+  <!-- 🎨 載入 Google 的 Material Icons 圖示字型，讓你能用 <i class="material-icons">icon_name</i> 顯示圖標 -->
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+  
+  <!-- 📍 Leaflet 地圖元件的 CSS，讓地圖顯示正確樣式 -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+
+  <!-- 🗺️ Leaflet 地圖元件的 JS，提供互動式地圖功能 -->
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
+  <!-- ✅ Boxicons 圖示字體庫，讓你使用各種漂亮圖標 -->
+  <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+
+  <!-- 🎨 style.css：你自己寫的主樣式檔案（頁面整體風格） -->
+
+     
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="calendar.css">
+
+</head>
+<body>
+  <!-- Start 選擇畫面 -->
+<div class="container1" id="start-screen">
+    <!-- 登入畫面 -->
+    <div class="form-box login">
+      <form action="#">
+        <h1>登入</h1>
+
+            <div class="antiMaterialize">
+                <div class="input-box">
+                    <input type="text" id="login-username" placeholder="帳戶名稱" required>
+                    <i class='bx bxs-user'></i>
+                </div>
+                <div class="input-box">
+                    <input type="password" id="login-password" placeholder="密碼" required>
+                    <i class='bx bxs-lock-alt' ></i>
+                </div>
+            </div>
+
+            <button onclick="handleLogin()" class="btn">登入</button>
+      </form>
+    </div>
+    <!-- 註冊畫面 -->
+    <div class="form-box register">
+      <form action="#">
+        <h1>註冊</h1>
+
+            <div class="input-box">
+                <input type="text" id="register-username" placeholder="帳戶名稱" required>
+                <i class='bx bxs-user'></i>
+            </div>
+
+            <div class="input-box">
+                <input type="password" id="register-password" placeholder="密碼" required>
+                <i class='bx bxs-lock-alt' ></i>
+            </div>
+
+            <button onclick="handleRegister()" class="btn">註冊</button>
+      </form>
+    </div>
+
+    <div class="toggle-box">
+
+        <div class="toggle-panel toggle-left">
+            <h1>任務管理及安排</h1>
+            <p>沒有帳號嗎？</p>
+            <button class="btn register-btn">註冊</button>
+        </div>
+
+        <div class="toggle-panel toggle-right">
+            <h1>註冊介面</h1>
+            <p>有帳號嗎？</p>
+            <button class="btn login-btn">登入</button>
+        </div>
+
+    </div>
+</div>
+
+
+
+  <!-- 任務介面 -->
+<div id="task-screen" class="hidden">
+
+  <div class="mobile-header z-depth-1">
+      <div class="row">
+
+        <div class="col-2">
+          <!-- 漢堡選單按鈕 -->
+          <a href="#" data-activates="sidebar" class="button-collapse">
+            <i class="material-icons">menu</i>
+          </a>
+        </div>
+
+        <div class="col">
+          <h4>事件</h4>
+        </div>
+        
+      </div>
+
+  </div>
+
+    <!-- 📦 主容器 -->
+    <div class="main-wrapper">
+
+        <!-- 📑 側邊欄 -->
+        <div class="sidebar-wrapper z-depth-2 side-nav fixed" id="sidebar">
+            <div class="sidebar-title">
+                <h4>事件</h4>
+                <h5 id="eventDayName">Date</h5> 
+            </div>
+
+            <div class="sidebar-events" id="sidebarEvents">
+                <ul id="tasks-list"></ul>
+            </div>   
+
+        </div>
+
+          <!-- 📄 主要內容區塊 -->
+        <div class="content-wrapper lighten-3">
+
+              <!-- 📆 行事曆主體 -->
+            <div class="calendar-wrapper z-depth-2">
+
+                  <!-- 📅 行事曆標頭 -->
+                <div class="header-background">
+                    <div class="calendar-header">
+                      <!-- ⬅️ ➡️ 月份切換按鈕 -->
+                      <a class="prev-button" id="prev">
+                        <i class="material-icons">keyboard_arrow_left</i>
+                      </a>
+
+                      <a class="next-button" id="next">
+                        <i class="material-icons">keyboard_arrow_right</i>
+                      </a>
+
+                      <div class="row header-title">
+                        <div class="header-text">
+                          <h3 id="month-name"></h3>
+                          <h5 id="todayDayName"></h5>
+                        </div>
+                      </div>
+
+                    </div>
+                </div>
+
+            <div class="calendar-box">
+                  <!-- 🗓️ 行事曆內容（星期標頭 + 日期） -->
+                <div class="calendar-content">
+                    <div id="calendar-table" class="calendar-cells">
+                      <!-- 📅 星期列 -->
+                        <div id="table-header">
+                            <div class="row">
+                              <div class="col">壹</div>
+                              <div class="col">貳</div>
+                              <div class="col">叄</div>
+                              <div class="col">肆</div>
+                              <div class="col">伍</div>
+                              <div class="col">陸</div>
+                              <div class="col">柒</div>
+                            </div>
+                        </div>
+
+                        <!-- 🔢 日期區塊（由 JS 動態填入） -->
+                        <div id="table-body" class="">
+                          <!-- JS 會填入每月的格子 -->
+                        </div>
+
+                    </div>
+                </div>
+
+                  <!-- 📝 行事曆底部（新增事件區） -->
+            <div class="calendar-footer">
+                    <!-- 當前無事件時 -->
+                <div class="emptyForm" id="emptyForm">
+                    <h4 id="emptyFormTitle">沒有事件</h4>
+                    <a class="addEvent" id="changeFormButton">新增事件</a>
+                </div>
+
+                    <!-- 新增事件表單 -->
+                <div class="addForm" id="addForm">
+                    <h4>新增任務</h4>
+                    <form id="task-form">
+                        <input type="text" id="title" name="title" placeholder="標題" required />
+                        <textarea id="description" name="description" placeholder="描述"></textarea>
+                        
+                        <div class="input-field">
+                          <select id="inputTypeSelect">
+                              <option value="" disabled selected>請選擇欄位類型</option>
+                              <option value="tel">電話號碼（tel）</option>
+                              <option value="url">網址（url）</option>                              
+                              <option value="email">電子郵件（email）</option>
+                              <option value="time">時間（time）</option>
+                          </select>
+                          <label>選擇一個選項</label>      
+                          <button id="addInputBtn" type="button" class="waves-effect waves-light btn blue lighten-2">新增</button>
+                        </div>
+                          <div class="Type" id="Type">
+                        </div>
+                        
+                        <!-- 地點設定區塊 -->
+                            <div class="location-checkbox">
+                                <input type="checkbox" id="enable-location" class="">
+                                <label for="enable-location"class="">
+                                    指定任務地點
+                                </label>
+                            </div>
+
+                            <div id="location-fields" class="hidden">
+                                <input type="text" id="location_name" name="location_name" placeholder="為地點命名">
+                                <div id="map" style="height: 300px;"></div>
+                            </div>                      
+                          
+                          <!-- 隱藏欄位儲存經緯度 -->
+                        <input type="hidden" id="latitude" name="latitude">
+                        <input type="hidden" id="longitude" name="longitude">
+
+                        <!-- 提交任務按鈕 -->
+                        <div class="button-box">             
+                            <button type="submit"  class="waves-effect waves-light btn blue lighten-2">提交</button>
+                            <button id="cancelAdd" class="waves-effect waves-light btn grey lighten-2">取消</button>
+                        </div>
+
+                    </form>     
+                </div>
+            </div>
+            </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+    <!-- ✅ jQuery：用來操作 DOM -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js" integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh"
+    crossorigin="anonymous"></script>    
+    
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js" integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ"
+    crossorigin="anonymous"></script>    
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/js/materialize.min.js"></script>
+
+    <script>
+      $(".button-collapse").sideNav();    
+      $(document).ready(function() {
+      $('select').material_select();
+      });
+
+
+    </script>
+    
+ 
+  <script src="auth.js"></script>
+  <script src="tasks.js"></script>
+  <script src="location.js"></script>
+  <script src="calendar1.js"></script>
+</body>
+
+</html>
