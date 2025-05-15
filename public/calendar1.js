@@ -414,4 +414,8 @@ cancelAdd.onclick = function (e) {
    for (let i = 0; i < inputs.length; i++) inputs[i].value = ""; // 清空輸入
    let labels = addForm.getElementsByTagName("label");
    for (let i = 0; i < labels.length; i++) labels[i].className = ""; // 重設 label 樣式
+   const form = document.getElementById('task-form');
+   form.reset(); 
+   document.getElementById('Type').innerHTML = '';
+
 }
