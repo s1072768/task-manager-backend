@@ -408,13 +408,13 @@ changeFormButton.onclick = function (e) {
 }
 
 var cancelAdd = document.getElementById("cancelAdd");
+const form = document.getElementById('task-form');
 cancelAdd.onclick = function (e) {
    addForm.style.top = "100%"; // 隱藏表單
    let inputs = addForm.getElementsByTagName("input");
    for (let i = 0; i < inputs.length; i++) inputs[i].value = ""; // 清空輸入
    let labels = addForm.getElementsByTagName("label");
    for (let i = 0; i < labels.length; i++) labels[i].className = ""; // 重設 label 樣式
-   const form = document.getElementById('task-form');
    form.reset(); 
    document.getElementById('Type').innerHTML = '';
 
